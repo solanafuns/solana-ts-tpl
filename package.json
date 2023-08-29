@@ -1,0 +1,27 @@
+{
+  "name": "solana-ts-tpl",
+  "version": "1.0.0",
+  "description": "solana-ts-tpl",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd client ; yarn start",
+    "cargo:build": "cargo build-bpf --manifest-path=./program/helloworld/Cargo.toml --bpf-out-dir=dist/program",
+    "cargo:deploy": "solana program deploy ./dist/program/helloworld.so"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/v1xingyue/solana-ts-tpl.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/v1xingyue/solana-ts-tpl/issues"
+  },
+  "homepage": "https://github.com/v1xingyue/solana-ts-tpl#readme",
+  "dependencies": {
+    "@project-serum/borsh": "^0.2.5",
+    "@solana/web3.js": "^1.78.4",
+    "borsh": "^1.0.0"
+  }
+}
