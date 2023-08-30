@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "cd client ; yarn start",
-    "cargo:build": "cargo build-bpf --manifest-path=./program/helloworld/Cargo.toml --bpf-out-dir=dist/program",
-    "cargo:deploy": "solana program deploy ./dist/program/helloworld.so"
+    "cargo:build": "cargo build-bpf --manifest-path=./program/blank/Cargo.toml --bpf-out-dir=dist/program",
+    "cargo:deploy": "solana program deploy ./dist/blank/blank.so"
   },
   "repository": {
     "type": "git",

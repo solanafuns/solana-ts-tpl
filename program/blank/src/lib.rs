@@ -1,13 +1,59 @@
 use solana_program::{
-    account_info::AccountInfo, entrypoint, entrypoint::ProgramResult, msg, pubkey::Pubkey,
+    account_info::{next_account_info, AccountInfo},
+    entrypoint,
+    entrypoint::ProgramResult,
+    msg,
+    program::invoke_signed,
+    pubkey::Pubkey,
+    system_instruction,
+    sysvar::{rent::Rent, Sysvar},
 };
 
 entrypoint!(process_instruction);
 fn process_instruction(
-    _program_id: &Pubkey,
-    _accounts: &[AccountInfo],
-    _instruction_data: &[u8],
+    program_id: &Pubkey,
+    accounts: &[AccountInfo],
+    instruction_data: &[u8],
 ) -> ProgramResult {
-    msg!("Hello, World!");
+    let account_info_iter = &mut accounts.iter();
+    let signer = next_account_info(account_info_iter)?;
+    let pda_account: &AccountInfo<'_> = next_account_info(account_info_iter)?;
+    let system_account = next_account_info(account_info_iter)?;
+
+    let (pda, bump_seed) =
+        Pubkey::find_program_address(&[signer.key.as_ref(), b"pda-account"], program_id);
+
+    msg!(
+        "do pda account operate : {} , {}",
+        pda.to_string(),
+        bump_seed
+    );
+
+    if pda_account.data_is_empty() {
+        msg!("pda account is empty, create it!");
+        const PDA_SPACE: usize = 64;
+
+        // 计算所需的租金
+        let rent = Rent::get()?;
+        let rent_lamports = rent.minimum_balance(PDA_SPACE);
+
+        // 创建账户
+        invoke_signed(
+            &system_instruction::create_account(
+                signer.key,
+                pda_account.key,
+                rent_lamports,
+                PDA_SPACE.try_into().unwrap(),
+                program_id,
+            ),
+            &[signer.clone(), pda_account.clone(), system_account.clone()],
+            &[&[signer.key.as_ref(), b"pda-account", &[bump_seed]]],
+        )?;
+    } else {
+        msg!("pda account is not empty, do something!");
+        let mut data_mut = pda_account.try_borrow_mut_data()?;
+        data_mut[..instruction_data.len()].copy_from_slice(instruction_data);
+    }
+
     Ok(())
 }

@@ -66,13 +66,12 @@ async function ada_usage(signer: web3.Keypair) {
 }
 
 async function pda_usage(signer: web3.Keypair) {
-  const pda_seed = "pda.creator";
-
-  const movie: Movie = new Movie("movie title", 3, "movie description");
+  const pda_address = "HwFF1oi1uD14nRbDkrtrjsJqzs45WkQ9eP8YakAxG3PG";
+  let pda_program = new web3.PublicKey(pda_address);
 
   const [pda, bump_seed] = web3.PublicKey.findProgramAddressSync(
-    [signer.publicKey.toBuffer(), new TextEncoder().encode(movie.title)],
-    program
+    [signer.publicKey.toBuffer(), new TextEncoder().encode("pda-account")],
+    pda_program
   );
 
   console.log("pda address : ", pda.toBase58());
@@ -99,8 +98,8 @@ async function pda_usage(signer: web3.Keypair) {
       },
     ],
     // 这是最重要的部分！
-    data: movie.serialize(),
-    programId: program,
+    data: Buffer.from("hello pda world!!!"),
+    programId: pda_program,
   });
 
   const transaction = new web3.Transaction().add(instruction);
