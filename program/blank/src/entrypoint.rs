@@ -84,6 +84,16 @@ fn process_instruction(
                 }
             }
         }
+        // 关闭pda 账户，清空数据，将lamports转移给签名账户
+        "close" => {
+            let dest_starting_lamports = signer.lamports();
+            **signer.lamports.borrow_mut() = dest_starting_lamports
+                .checked_add(pda_account.lamports())
+                .unwrap();
+            **pda_account.lamports.borrow_mut() = 0;
+            let mut source_data: std::cell::RefMut<'_, &mut [u8]> = pda_account.data.borrow_mut();
+            source_data.fill(0);
+        }
         "hello" => {
             msg!("hello world")
         }
