@@ -1,9 +1,7 @@
 import { initializeKeypair } from "./initializeKeypair";
 import * as web3 from "@solana/web3.js";
-import { Movie } from "./movie";
 
-// const connection = new web3.Connection(web3.clusterApiUrl("devnet"));
-const connection = new web3.Connection("http://localhost:8899");
+const connection = new web3.Connection("http://127.0.0.1:8899");
 const program = new web3.PublicKey(
   "2nStmaWKf1dShpT8nvKicx6KL55jB9SdZbTwLwY4JaN3"
 );
@@ -27,9 +25,7 @@ async function ada_usage(signer: web3.Keypair) {
       web3.SystemProgram.assign({
         accountPubkey: ada_account,
         basePubkey: signer.publicKey,
-        programId: new web3.PublicKey(
-          "HwFF1oi1uD14nRbDkrtrjsJqzs45WkQ9eP8YakAxG3PG"
-        ),
+        programId: program,
         seed,
       })
     );
@@ -98,7 +94,7 @@ async function pda_usage(signer: web3.Keypair) {
       },
     ],
     // 这是最重要的部分！
-    data: Buffer.from("hello this is creator world!!!"),
+    data: Buffer.from("realloc"),
     programId: pda_program,
   });
 
@@ -115,8 +111,6 @@ async function pda_usage(signer: web3.Keypair) {
 
 async function main() {
   const signer = await initializeKeypair(connection);
-  const info = await connection.getAccountInfo(program);
-  console.log(info);
   // await ada_usage(signer);
   await pda_usage(signer);
 }
