@@ -66,7 +66,7 @@ async function ada_usage(signer: web3.Keypair) {
 }
 
 async function pda_usage(signer: web3.Keypair) {
-  const pda_address = "HwFF1oi1uD14nRbDkrtrjsJqzs45WkQ9eP8YakAxG3PG";
+  const pda_address = "EHCFCSPghqC1ivDFmfSTxW2AvPfQoKFyCvaaH9BfS9qi";
   let pda_program = new web3.PublicKey(pda_address);
 
   const [pda, bump_seed] = web3.PublicKey.findProgramAddressSync(
@@ -98,7 +98,7 @@ async function pda_usage(signer: web3.Keypair) {
       },
     ],
     // 这是最重要的部分！
-    data: Buffer.from("hello pda world!!!"),
+    data: Buffer.from("hello this is creator world!!!"),
     programId: pda_program,
   });
 

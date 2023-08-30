@@ -6,7 +6,7 @@
   "scripts": {
     "test": "cd client ; yarn start",
     "cargo:build": "cargo build-bpf --manifest-path=./program/blank/Cargo.toml --bpf-out-dir=dist/program",
-    "cargo:deploy": "solana program deploy ./dist/blank/blank.so"
+    "cargo:deploy": "solana program deploy ./dist/program/blank.so"
   },
   "repository": {
     "type": "git",
