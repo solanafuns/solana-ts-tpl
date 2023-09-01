@@ -18,10 +18,5 @@
   "bugs": {
     "url": "https://github.com/v1xingyue/solana-ts-tpl/issues"
   },
-  "homepage": "https://github.com/v1xingyue/solana-ts-tpl#readme",
-  "dependencies": {
-    "@project-serum/borsh": "^0.2.5",
-    "@solana/web3.js": "^1.78.4",
-    "borsh": "^1.0.0"
-  }
+  "homepage": "https://github.com/v1xingyue/solana-ts-tpl#readme"
 }

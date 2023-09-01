@@ -2,6 +2,8 @@ import { initializeKeypair } from "./initializeKeypair";
 import * as web3 from "@solana/web3.js";
 
 const connection = new web3.Connection("http://127.0.0.1:8899");
+// const connection = new web3.Connection(web3.clusterApiUrl("devnet"));
+
 const program = new web3.PublicKey(
   "2nStmaWKf1dShpT8nvKicx6KL55jB9SdZbTwLwY4JaN3"
 );
@@ -62,7 +64,7 @@ async function ada_usage(signer: web3.Keypair) {
 }
 
 async function pda_usage(signer: web3.Keypair) {
-  const pda_address = "EHCFCSPghqC1ivDFmfSTxW2AvPfQoKFyCvaaH9BfS9qi";
+  const pda_address = "6FNhh7VkdEr2ZVr3r916yDKeB43TnHcp9EAGyTZ6Y9om";
   let pda_program = new web3.PublicKey(pda_address);
 
   const [pda, bump_seed] = web3.PublicKey.findProgramAddressSync(
@@ -94,7 +96,58 @@ async function pda_usage(signer: web3.Keypair) {
       },
     ],
     // 这是最重要的部分！
-    data: Buffer.from("realloc"),
+    data: Buffer.from("transfer"),
+    programId: pda_program,
+  });
+
+  const transaction = new web3.Transaction().add(instruction);
+
+  const signature = await web3.sendAndConfirmTransaction(
+    connection,
+    transaction,
+    [signer]
+  );
+
+  console.log(signature);
+}
+
+async function pda_transfer(signer: web3.Keypair) {
+  const pda_address = "EHCFCSPghqC1ivDFmfSTxW2AvPfQoKFyCvaaH9BfS9qi";
+  let pda_program = new web3.PublicKey(pda_address);
+
+  const [pda, bump_seed] = web3.PublicKey.findProgramAddressSync(
+    [
+      // signer.publicKey.toBuffer(),
+      new TextEncoder().encode("creatordao-pda-vault"),
+    ],
+    pda_program
+  );
+
+  console.log("pda address : ", pda.toBase58());
+
+  const instruction = new web3.TransactionInstruction({
+    keys: [
+      {
+        // 你的帐户将支付费用，因此会写入网络
+        pubkey: signer.publicKey,
+        isSigner: true,
+        isWritable: false,
+      },
+      {
+        // PDA将存储电影评论
+        pubkey: pda,
+        isSigner: false,
+        isWritable: true,
+      },
+      {
+        // 系统程序将用于创建PDA
+        pubkey: web3.SystemProgram.programId,
+        isSigner: false,
+        isWritable: false,
+      },
+    ],
+    // 这是最重要的部分！
+    data: Buffer.from("init"),
     programId: pda_program,
   });
 
@@ -112,7 +165,8 @@ async function pda_usage(signer: web3.Keypair) {
 async function main() {
   const signer = await initializeKeypair(connection);
   // await ada_usage(signer);
-  await pda_usage(signer);
+  // await pda_usage(signer);
+  await pda_transfer(signer);
 }
 
 main()
