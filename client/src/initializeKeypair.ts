@@ -30,11 +30,11 @@ export async function airdropSolIfNeeded(
   const balance = await connection.getBalance(signer.publicKey);
   console.log("Current balance is", balance / web3.LAMPORTS_PER_SOL);
 
-  if (balance < web3.LAMPORTS_PER_SOL * 5) {
-    console.log("Airdropping 5 SOL...");
+  if (balance < web3.LAMPORTS_PER_SOL * 3) {
+    console.log("Airdropping 3.5 SOL...");
     const airdropSignature = await connection.requestAirdrop(
       signer.publicKey,
-      web3.LAMPORTS_PER_SOL * 5
+      web3.LAMPORTS_PER_SOL * 3.5
     );
 
     const latestBlockHash = await connection.getLatestBlockhash();
