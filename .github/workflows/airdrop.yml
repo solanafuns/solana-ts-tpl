@@ -21,8 +21,6 @@ jobs:
       - name: Install ts-node pnpm
         run: npm install -g ts-node yarn
 
-      - name: Install and Airdrop 🔧
+      - name: Install solana 🔧
         run: |
-          yarn install
-          cd client && yarn install 
-          yarn airdrop
+          sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
