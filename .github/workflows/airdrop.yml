@@ -7,7 +7,7 @@ on:
     
 
 jobs:
-  save_new_wechat:
+  airdrop-some-sol:
     runs-on: ubuntu-latest
     steps:
       - name: Install solana And airdrop 🔧
