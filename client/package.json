@@ -4,7 +4,9 @@
   "description": "Starter template for a Solana client script",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "test": "ts-node src/test.ts",
+    "airdrop": "ts-node src/airdrop.ts"
   },
   "keywords": [],
   "author": "test",

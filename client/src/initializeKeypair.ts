@@ -23,7 +23,7 @@ export async function initializeKeypair(
   return keypair;
 }
 
-async function airdropSolIfNeeded(
+export async function airdropSolIfNeeded(
   signer: web3.Keypair,
   connection: web3.Connection
 ) {

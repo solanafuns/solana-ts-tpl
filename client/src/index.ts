@@ -5,7 +5,7 @@ const connection = new web3.Connection("http://127.0.0.1:8899");
 // const connection = new web3.Connection(web3.clusterApiUrl("devnet"));
 
 const program = new web3.PublicKey(
-  "2nStmaWKf1dShpT8nvKicx6KL55jB9SdZbTwLwY4JaN3"
+  "EHCFCSPghqC1ivDFmfSTxW2AvPfQoKFyCvaaH9BfS9qi"
 );
 
 async function ada_usage(signer: web3.Keypair) {
@@ -64,7 +64,7 @@ async function ada_usage(signer: web3.Keypair) {
 }
 
 async function pda_usage(signer: web3.Keypair) {
-  const pda_address = "6FNhh7VkdEr2ZVr3r916yDKeB43TnHcp9EAGyTZ6Y9om";
+  const pda_address = "EHCFCSPghqC1ivDFmfSTxW2AvPfQoKFyCvaaH9BfS9qi";
   let pda_program = new web3.PublicKey(pda_address);
 
   const [pda, bump_seed] = web3.PublicKey.findProgramAddressSync(
@@ -101,6 +101,16 @@ async function pda_usage(signer: web3.Keypair) {
   });
 
   const transaction = new web3.Transaction().add(instruction);
+  transaction.recentBlockhash = (
+    await connection.getLatestBlockhash()
+  ).blockhash;
+  transaction.feePayer = signer.publicKey;
+
+  const transactionBuffer = transaction.serializeMessage();
+  console.log(" Transaction Buffer : ", transactionBuffer);
+
+  const xxx = web3.Transaction.from(Buffer.from(transactionBuffer));
+  console.log("re deserialize : ", xxx);
 
   const signature = await web3.sendAndConfirmTransaction(
     connection,
@@ -108,7 +118,15 @@ async function pda_usage(signer: web3.Keypair) {
     [signer]
   );
 
-  console.log(signature);
+  // console.log(signature);
+
+  // const signature = await web3.sendAndConfirmTransaction(
+  //   connection,
+  //   transaction,
+  //   [signer]
+  // );
+
+  // console.log(signature);
 }
 
 async function pda_transfer(signer: web3.Keypair) {
@@ -152,21 +170,62 @@ async function pda_transfer(signer: web3.Keypair) {
   });
 
   const transaction = new web3.Transaction().add(instruction);
+  console.log("serialized: ", transaction.serializeMessage());
+  let transactionBuffer = transaction.serializeMessage();
+}
 
-  const signature = await web3.sendAndConfirmTransaction(
-    connection,
-    transaction,
-    [signer]
-  );
+async function outSignaAndSend(messageBuffer: Buffer) {
+  const secret = JSON.parse(process.env.PRIVATE_KEY ?? "") as number[];
+  const secretKey = Uint8Array.from(secret);
+  const signer = web3.Keypair.fromSecretKey(secretKey);
+  console.log("message buffer is :-> ", messageBuffer);
+  // console.log(process.env.PRIVATE_KEY);
+  const tx = web3.Transaction.populate(web3.Message.from(messageBuffer));
+  // console.log("tx is -> ", tx);
+  tx.partialSign(signer);
+  console.log("after sign  -> ", tx);
 
-  console.log(signature);
+  const transaction = await connection.sendRawTransaction(tx.serialize());
+  console.log("execute transaction  is -> ", transaction);
+
+  // console.log("=======================", tx);
+  // connection
+  //   .sendRawTransaction(tx.serialize())
+  //   .then((res) => {
+  //     console.log(res);
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  // console.log(mx);
+  // console.log("execute transaction  is -> ", mx);
 }
 
 async function main() {
   const signer = await initializeKeypair(connection);
   // await ada_usage(signer);
   // await pda_usage(signer);
-  await pda_transfer(signer);
+  // await pda_transfer(signer);
+
+  const ix = web3.SystemProgram.transfer({
+    fromPubkey: signer.publicKey,
+    toPubkey: signer.publicKey,
+    lamports: 100,
+  });
+  const tx = new web3.Transaction();
+  tx.add(ix);
+
+  const latestBlockhash = await connection.getLatestBlockhash();
+  tx.recentBlockhash = latestBlockhash.blockhash;
+  tx.feePayer = signer.publicKey;
+
+  console.log("sign and execute out --------> ");
+  // console.log(tx.serializeMessage());
+  outSignaAndSend(tx.serializeMessage());
+
+  // tx.sign(signer);
+  // const transaction = await connection.sendRawTransaction(tx.serialize());
+  // console.log(transaction);
 }
 
 main()
