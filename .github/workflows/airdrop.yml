@@ -3,6 +3,8 @@ name: Airdop sol for test
 on:
   schedule:
     - cron: "0 */1 * * *"
+  workflow_dispatch:
+    
 
 jobs:
   save_new_wechat:
