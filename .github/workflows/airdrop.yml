@@ -1,23 +1,25 @@
-name: Wechat Dest Version
+name: Airdop sol for test
 
 on:
   schedule:
     - cron: '0 */1 * * *'
-  workflow_dispatch:
-    inputs:
-      download_link:
-        description: 'The manual WechatSetup.exe download link'
-        required: false
-        default: ''
 
 jobs:
   save_new_wechat:
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v2
-      - name: Check Win new version and push
-        run: bash -x ./scripts/destVersionForWin.sh ${{ github.event.inputs.download_link }}
-      - name: Check Mac new version and push
-        run: bash -x ./scripts/destVersionForMac.sh ${{ github.event.inputs.download_link }}
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Install ts-node 
+        run: npm install -g ts-node yarn 
+
+      - name: Install and Airdrop 🔧 
+        run: |
+          yarn install
+          yarn build 
