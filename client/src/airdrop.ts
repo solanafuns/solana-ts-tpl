@@ -6,9 +6,7 @@ dotenv.config();
 const connection = new web3.Connection(web3.clusterApiUrl("devnet"));
 
 const main = async () => {
-  const secret = JSON.parse(process.env.PRIVATE_KEY ?? "") as number[];
-  const secretKey = Uint8Array.from(secret);
-  const signer = web3.Keypair.fromSecretKey(secretKey);
+  const signer = web3.Keypair.generate();
   console.log(signer.publicKey.toBase58());
 
   await airdropSolIfNeeded(signer, connection);

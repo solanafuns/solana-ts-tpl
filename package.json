@@ -4,7 +4,9 @@
   "description": "solana-ts-tpl",
   "main": "index.js",
   "scripts": {
-    "test": "cd client ; yarn start",
+    "start": "cd client ; yarn start",
+    "airdrop": "cd client ; yarn airdrop",
+    "test": "cd client ; yarn test",
     "cargo:build": "cargo build-bpf --manifest-path=./program/blank/Cargo.toml --bpf-out-dir=dist/program",
     "cargo:deploy": "solana program deploy ./dist/program/blank.so"
   },
@@ -18,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/v1xingyue/solana-ts-tpl/issues"
   },
-  "homepage": "https://github.com/v1xingyue/solana-ts-tpl#readme"
+  "homepage": "https://github.com/v1xingyue/solana-ts-tpl#readme",
+  "dependencies": {
+    "tweetnacl": "^1.0.3"
+  }
 }
