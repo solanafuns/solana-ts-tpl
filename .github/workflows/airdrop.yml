@@ -2,7 +2,7 @@ name: Airdop sol for test
 
 on:
   schedule:
-    - cron: "30 */3 * * *"
+    - cron: "30 */8 * * *"
   workflow_dispatch:
 
 jobs:
